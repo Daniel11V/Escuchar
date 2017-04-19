@@ -44,32 +44,26 @@ textarea {
 	</section>
 
 <script type="text/javascript">
+navigator.getUserMedia = navigator.getUserMedia ||
+                         navigator.webkitGetUserMedia ||
+                         navigator.mozGetUserMedia;
 
-navigator.getUserMedia = ( navigator.getUserMedia ||
-										 navigator.webkitGetUserMedia ||
-										 navigator.mozGetUserMedia ||
-										 navigator.msGetUserMedia);
-
-navigator.getUserMedia (
-
- // constraints
- {
-		video: true,
-		audio: false
- },
-
- // successCallback
- function(localMediaStream) {
-		var video = document.querySelector(video);
-		video.src = window.URL.createObjectURL(localMediaStream);
- },
-
- // errorCallback
- function(err) {
-	console.log("Ocurrió el siguiente error: " + err);
- }
-
-);
+if (navigator.getUserMedia) {
+   navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
+      function(stream) {
+         var video = document.querySelector('video');
+         video.srcObject = stream;
+         video.onloadedmetadata = function(e) {
+           video.play();
+         };
+      },
+      function(err) {
+         console.log("The following error occurred: " + err.name);
+      }
+   );
+} else {
+   console.log("getUserMedia not supported");
+}
 </script>
 
 </body></html>
