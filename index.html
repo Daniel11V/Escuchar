@@ -1,69 +1,74 @@
-<html><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" href="Neon_habla6.css">
-<title>La API de Reconocimiento de Voz en JavaScript: speechRecognition()</title>
-<style>
-button {
-	color: #ffffff;
-	background-color: #007fff;
-	border-color: #007fff;
-	display: block;
-	margin: 0 auto;
-	font-weight: normal;
-	text-align: center;
-	vertical-align: middle;
-	cursor: pointer;
-	background-image: none;
-	border: 1px solid transparent;
-	white-space: nowrap;
-	padding: 10px 18px;
-	font-size: 15px;
-	line-height: 1.42857143;
-	border-radius: 0;
-}
+<html>
+	<head>
+		<link rel="stylesheet" href="Neon_habla6.css">
+		<title>La API de Reconocimiento de Voz en JavaScript: speechRecognition()</title>
+	</head>
+	<body>
+		<video autoplay id="video" width="720px" height="480px">
 
-textarea {
-	display: block;
-	margin: 10px;
-	border: 1px solid #CCC;
-	padding: 10px;
-	width: 100%;
-	min-height: 150px;
-}
-</style>
-</head>
-<body>
-	<header>
-		<h1>La API de Reconocimiento de Voz en JavaScript: speechRecognition()</h1>
-	</header>
-	<section>
-		<div class="example">
-			<textarea id="texto"></textarea>
-			<button onclick="procesar()" id="procesar">Escuchar</button>
-		</div>
-	</section>
+		</video>
+		<input type="button" id="boton" value="Empezar">
+		<script type="text/javascript">
+			// navigator.getUserMedia = navigator.getUserMedia ||
+			//                          navigator.webkitGetUserMedia ||
+			//                          navigator.mozGetUserMedia;
+			//
+			// if (navigator.getUserMedia) {
+			//    navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
+			//       function(stream) {
+			//          var video = document.querySelector('video');
+			//          video.src = stream;
+			//          video.onloadedmetadata = function(e) {
+			//            video.play();
+			//          };
+			//       },
+			//       function(err) {
+			//          console.log("The following error occurred: " + err.name);
+			//       }
+			//    );
+			// } else {
+			//    console.log("getUserMedia not supported");
+			// }
 
-<script type="text/javascript">
-navigator.getUserMedia = navigator.getUserMedia ||
-                         navigator.webkitGetUserMedia ||
-                         navigator.mozGetUserMedia;
+			var botonGrabar = document.getElementById("boton")
+			video = document.getElementById("video")
+			error = function(error) {
+				console.log("Error:", error.name);
+			};
 
-if (navigator.getUserMedia) {
-   navigator.getUserMedia({ audio: true, video: { width: 1280, height: 720 } },
-      function(stream) {
-         var video = document.querySelector('video');
-         video.srcObject = stream;
-         video.onloadedmetadata = function(e) {
-           video.play();
-         };
-      },
-      function(err) {
-         console.log("The following error occurred: " + err.name);
-      }
-   );
-} else {
-   console.log("getUserMedia not supported");
-}
-</script>
-
-</body></html>
+			function grabar(){
+				// Estándar
+				if(navigator.getUserMedia) {
+					navigator.getUserMedia({
+						"video": true
+					}, function(stream) {
+						video.src = stream;
+						video.play();
+					}, error);
+				}
+				// prefijo WebKit
+				else if(navigator.webkitGetUserMedia) {
+					navigator.webkitGetUserMedia({
+						"video": true
+					}, function(stream){
+						video.src = window.URL.createObjectURL(stream);
+						video.play();
+					}, error);
+				}
+				// prefijo Moz
+				else if(navigator.mozGetUserMedia) {
+					navigator.mozGetUserMedia({
+						"video": true
+					}, function(stream){
+						video.src = window.URL.createObjectURL(stream);
+						video.play();
+					}, error);
+				} // Navegadores no compatibles
+				else {
+					alert("Tu navegador no es compatible con getUserMedia");
+				}
+			};
+			botonGrabar.addEventListener("click", grabar);
+		</script>
+	</body>
+</html>
